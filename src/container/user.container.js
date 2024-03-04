@@ -1,71 +1,67 @@
-import { useEffect, useState } from "react";
+import React, { Component } from "react";
 import { getUsers } from "../api/user";
 import { formatUserData } from "../utils/helpers";
-import { useDispatch } from "react-redux";
-import {
-  startLoading,
-  stopLoadingError,
-  stopLoadingSuccess,
-} from "../redux/actions/loadingAction";
 
-export const userContainer = () => {
-  const [counter, setCounter] = useState(0);
+class UserContainer extends Component {
+  constructor(props) {
+    super(props);
 
-  const [usersData, setUsersData] = useState([]);
+    this.state = {
+      usersData: [],
+      currentPage: 1,
+      totalPages: 0,
+      usersPerPage: 5,
+    };
+  }
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  const [usersPerPage, setUsersPerPage] = useState(5);
-
-  const dispatch = useDispatch();
-  useEffect(() => {
-    // Merge of componentDidMount and componentDidUpdate
-    console.log("It will run whenever component mounts or updates");
-  });
-
-  const fetchUsers = async () => {
-    dispatch(startLoading());
+  fetchUsers = async () => {
     const { data, page, per_page, total, total_pages } = await getUsers(
-      currentPage,
-      usersPerPage
+      this.state.currentPage,
+      this.state.usersPerPage
     );
     if (!data) {
-      dispatch(stopLoadingError());
       return;
     }
     const finalData = data.map((user) => formatUserData(user));
-    setUsersData(finalData);
-    setTotalPages(total_pages);
-    dispatch(stopLoadingSuccess());
+    this.setState({ usersData: finalData, totalPages: total_pages });
   };
 
-  useEffect(() => {
-    // Equivalent of componentDidMount
-    console.log("This message is only showed once in whole lifecycle");
-    // fetchUsers();
-  }, []);
+  componentDidMount() {
+    console.log("componentDidMount");
+    this.fetchUsers();
+  }
 
-  // Merge of componentDidMount and componentDidUpdate but only for given dependency
-  useEffect(() => {
-    console.log(`This is mounted or count state updated => ${currentPage} .`);
-    fetchUsers();
-  }, [currentPage]);
+  componentDidUpdate(prevProps, prevState) {
+    console.log("componentDidUpdate");
+    if (prevState.currentPage !== this.state.currentPage) {
+      console.log(
+        `This is mounted or state updated => ${this.state.currentPage} .`
+      );
+      this.fetchUsers();
+    }
+  }
 
-  // Equivalent of componentWillUnmount
-  useEffect(() => {
-    return () => {
-      console.log("This is unmounted.");
-    };
-  }, []);
+  componentWillUnmount() {
+    console.log("componentWillUnmount => Before the componet lifecycle ends.");
+  }
 
-  const handleOnPageChange = ({ target }) => {
+  handleOnPageChange = ({ target }) => {
     console.log(parseInt(target?.outerText));
-    setCurrentPage(parseInt(target?.outerText));
+    this.setState({ currentPage: parseInt(target?.outerText) });
   };
 
-  return {
-    usersData,
-    totalPages,
-    handleOnPageChange,
+  getExposedData = () => {
+    const { usersData, totalPages } = this.state;
+    return {
+      usersData,
+      totalPages,
+      handleOnPageChange: this.handleOnPageChange,
+    };
   };
-};
+
+  render() {
+    return this.props.children(this.getExposedData());
+  }
+}
+
+export default UserContainer;
