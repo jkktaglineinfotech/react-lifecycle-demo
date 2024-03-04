@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import CommonDataTable from "../shared/CommonDataTable";
-import { Pagination } from "../shared/Pagination";
 import { projectText } from "../description/user.description";
 import UserContainer from "../container/user.container";
+import Pagination from "../shared/Pagination";
 
 class Home extends Component {
   render() {
