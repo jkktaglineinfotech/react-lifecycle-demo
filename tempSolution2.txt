@@ -105,3 +105,74 @@ const App = () => {
 };
 
 export default App;
+
+/*
+import React, { useRef } from 'react';
+
+const EditableCell = ({ value }) => {
+  const cellRef = useRef(null);
+
+  const handleEditClick = () => {
+    // Replace the <td> with an <input> element
+    const inputElement = document.createElement('input');
+    inputElement.type = 'text';
+    inputElement.value = value;
+
+    inputElement.addEventListener('blur', handleBlur);
+    inputElement.addEventListener('keydown', handleKeyDown);
+
+    cellRef.current.innerHTML = '';
+    cellRef.current.appendChild(inputElement);
+    inputElement.focus();
+  };
+
+  const handleBlur = () => {
+    // Save changes and replace the <input> with a new <td>
+    const updatedValue = cellRef.current.firstChild.value;
+    cellRef.current.innerHTML = updatedValue;
+  };
+
+  const handleKeyDown = (e) => {
+    // Save changes on Enter key press and replace the <input> with a new <td>
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleBlur();
+    }
+  };
+
+  return (
+    <td ref={cellRef} onClick={handleEditClick}>
+      {value}
+    </td>
+  );
+};
+
+const TableRow = ({ row }) => {
+  return (
+    <tr>
+      <EditableCell value={row.first_name} />
+      {/* Add other cells here */}
+    </tr>
+  );
+};
+
+const EditableTable = ({ data }) => {
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>First Name</th>
+          {/* Add other headers here */}
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((row) => (
+          <TableRow key={row.id} row={row} />
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
+export default EditableTable;
+*/
