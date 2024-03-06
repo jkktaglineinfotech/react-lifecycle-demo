@@ -7,16 +7,16 @@ let isEditable = false;
 const App = () => {
   const defaultDataForTable = useMemo(
     () => [
-      { id: 1, first_name: "Test 1", last_name: "user 1" },
-      { id: 2, first_name: "Test 2", last_name: "user 2" },
-      { id: 3, first_name: "Test 3", last_name: "user 3" },
-      { id: 4, first_name: "Test 4", last_name: "user 4" },
-      { id: 5, first_name: "Test 5", last_name: "user 5" },
-      { id: 6, first_name: "Test 6", last_name: "user 6" },
-      { id: 7, first_name: "Test 7", last_name: "user 7" },
-      { id: 8, first_name: "Test 8", last_name: "user 8" },
-      { id: 9, first_name: "Test 9", last_name: "user 9" },
-      { id: 10, first_name: "Test 10", last_name: "user 10" },
+      { id: 1, first_name: "Test User 1", last_name: "user test 1" },
+      { id: 2, first_name: "Test User 2", last_name: "user test 2" },
+      { id: 3, first_name: "Test User 3", last_name: "user test 3" },
+      { id: 4, first_name: "Test User 4", last_name: "user test 4" },
+      { id: 5, first_name: "Test User 5", last_name: "user test 5" },
+      { id: 6, first_name: "Test User 6", last_name: "user test 6" },
+      { id: 7, first_name: "Test User 7", last_name: "user test 7" },
+      { id: 8, first_name: "Test User 8", last_name: "user test 8" },
+      { id: 9, first_name: "Test User 9", last_name: "user test 9" },
+      { id: 10, first_name: "Test User 10", last_name: "user test 10" },
     ],
     []
   );
@@ -28,7 +28,7 @@ const App = () => {
   const tableHeaders = Object.keys(localTableData[0]);
   const editRowRef = useRef([]);
   const editRef = useRef([]);
-
+  const saveRef = useRef([]);
   // console.log(tableHeaders);
 
   let isRowEditable = false;
@@ -48,7 +48,18 @@ const App = () => {
     }
   };
 
+  const addToSaveRefs = (el) => {
+    if (el && !saveRef.current.includes(el)) {
+      saveRef.current.push(el);
+    }
+  };
+
   const handleEditRow = (row, index) => {
+    //disable button if already editing one row and not saved
+    for (let idx = 0; idx < localTableData.length; idx++) {
+      if (editRef.current[idx].disabled == true) return;
+    }
+
     currentRefIndex = index;
     if (isRowEditable) return;
     // console.log(
@@ -106,6 +117,8 @@ const App = () => {
     }
   };
   const handleOnChange = (event) => {
+    isRowEditable = true;
+
     console.log(currentRefIndex, "currentRefIndex");
     const elementInput = document.getElementById("editablTextField");
     console.log("elementInput", elementInput);
@@ -118,6 +131,13 @@ const App = () => {
       editableRowIndex
     );
 
+    console.log(
+      "Before Remove",
+      editRowRef.current[currentRefIndex],
+      editRowRef.current[currentRefIndex].children[0]
+    );
+
+    if (!editRowRef.current[currentRefIndex].children[0]) return;
     //remove children
     editRowRef.current[currentRefIndex].removeChild(
       editRowRef.current[currentRefIndex].children[0]
@@ -125,21 +145,10 @@ const App = () => {
 
     if (!event.target.value.trim()) return;
 
-    isRowEditable = true;
-
     console.log(
       "editRowRef.current[currentRefIndex]",
       editRowRef.current[currentRefIndex].innerHTML
     );
-
-    //save data in local storege on enter
-    updatedLocalTableData = localTableData.map((data) =>
-      data.id === editableRowIndex
-        ? { ...data, first_name: editableNameValue }
-        : data
-    );
-    // console.log(updatedLocalTableData, "updatedLocalTableData");
-    localStorage.setItem("tableData", JSON.stringify(updatedLocalTableData));
 
     //update the value of table
     editRowRef.current[currentRefIndex].innerHTML = event.target.value;
@@ -147,11 +156,24 @@ const App = () => {
     editRef.current[currentRefIndex].disabled = false;
     isRowEditable = false;
 
+    if (editableRowIndex === -1) return;
+    //save data in local storege on enter
+    updatedLocalTableData = localTableData.map((data) =>
+      data.id === editableRowIndex
+        ? { ...data, first_name: editableNameValue }
+        : data
+    );
+
+    console.log(updatedLocalTableData, "updatedLocalTableData");
+
+    localStorage.setItem("tableData", JSON.stringify(updatedLocalTableData));
+    localTableData = JSON.parse(localStorage.getItem("tableData"));
+    editableRowIndex = -1;
     editableNameValue = "";
     // editableNameValue = target.value;
   };
 
-  const hanleSaveRow = (row) => {
+  const hanleSaveRow = (row, index) => {
     console.log("Save", editRowRef.current.children[1]);
     isRowEditable = false;
   };
@@ -185,8 +207,11 @@ const App = () => {
                     >
                       Edit
                     </button>
-                    {/* 
-                    <button onClick={() => hanleSaveRow(row)} ref={saveRef}>
+
+                    {/* <button
+                      onClick={() => hanleSaveRow(row, index)}
+                      ref={addToSaveRefs}
+                    >
                       Save
                     </button> */}
                   </div>
