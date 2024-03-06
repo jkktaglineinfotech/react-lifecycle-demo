@@ -25,6 +25,8 @@ const App = () => {
   let localTableData =
     JSON.parse(localStorage.getItem("tableData")) || defaultDataForTable;
 
+  console.log("localTableData", localTableData);
+
   const tableHeaders = Object.keys(localTableData[0]);
   const editRowRef = useRef([]);
   const editRef = useRef([]);
@@ -48,7 +50,7 @@ const App = () => {
     }
   };
 
-  const addToSaveRefs = (el) => {
+  const addToCancelRefs = (el) => {
     if (el && !saveRef.current.includes(el)) {
       saveRef.current.push(el);
     }
@@ -143,7 +145,13 @@ const App = () => {
       editRowRef.current[currentRefIndex].children[0]
     );
 
-    if (!event.target.value.trim()) return;
+    if (!event.target.value.trim()) {
+      console.log("No Change");
+      editRef.current[currentRefIndex].disabled = false;
+      isRowEditable = false;
+
+      return;
+    }
 
     console.log(
       "editRowRef.current[currentRefIndex]",
@@ -164,20 +172,33 @@ const App = () => {
         : data
     );
 
-    console.log(updatedLocalTableData, "updatedLocalTableData");
+    // console.log(updatedLocalTableData, "updatedLocalTableData");
 
+    //save data in localstorage
     localStorage.setItem("tableData", JSON.stringify(updatedLocalTableData));
     localTableData = JSON.parse(localStorage.getItem("tableData"));
     editableRowIndex = -1;
     editableNameValue = "";
+
     // editableNameValue = target.value;
   };
 
-  const hanleSaveRow = (row, index) => {
-    console.log("Save", editRowRef.current.children[1]);
+  const hanleCancelRow = (row, index) => {
+    if (!editRowRef.current[currentRefIndex].children[0]) return;
+
+    console.log("HandleCancel", editRowRef.current[currentRefIndex]);
+    editRef.current[currentRefIndex].disabled = false;
     isRowEditable = false;
+    editRowRef.current[currentRefIndex].removeChild(
+      editRowRef.current[currentRefIndex].children[0]
+    );
+    editableRowIndex = -1;
+    editableNameValue = "";
   };
 
+  const handleSaveRow = (row, index) => {
+    //
+  };
   console.log(editRowRef, "editRowRef");
   return (
     <div className="App">
@@ -200,7 +221,7 @@ const App = () => {
                 <td ref={addToEditRowRefs}>{row.first_name}</td>
                 <td>{row.last_name}</td>
                 <td>
-                  <div style={{ gap: "2px" }}>
+                  <div style={{ display: "flex", gap: "5px" }}>
                     <button
                       onClick={() => handleEditRow(row, index)}
                       ref={addToEditRefs}
@@ -208,12 +229,16 @@ const App = () => {
                       Edit
                     </button>
 
-                    {/* <button
-                      onClick={() => hanleSaveRow(row, index)}
-                      ref={addToSaveRefs}
+                    <button
+                      onClick={() => hanleCancelRow(row, index)}
+                      ref={addToCancelRefs}
                     >
+                      Cancel
+                    </button>
+
+                    <button onClick={() => handleSaveRow(row, index)}>
                       Save
-                    </button> */}
+                    </button>
                   </div>
                 </td>
               </tr>
