@@ -1,0 +1,3 @@
+solution 1 : - create a input element and make it disabled by default => get the element by id and make it enable => get its value from innerHTML and update it into localStorage by the index of the edited row.
+
+solution 2 :- make a simple td element => get it by document .getElementById and change its value with help of dom => save the values of it based on index in localStorage.

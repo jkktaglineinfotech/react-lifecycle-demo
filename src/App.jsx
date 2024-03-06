@@ -229,7 +229,7 @@ const App = () => {
                       Edit
                     </button>
 
-                    <button
+                    {/* <button
                       onClick={() => hanleCancelRow(row, index)}
                       ref={addToCancelRefs}
                     >
@@ -238,7 +238,7 @@ const App = () => {
 
                     <button onClick={() => handleSaveRow(row, index)}>
                       Save
-                    </button>
+                    </button> */}
                   </div>
                 </td>
               </tr>
