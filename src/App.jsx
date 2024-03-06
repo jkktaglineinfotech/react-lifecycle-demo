@@ -26,7 +26,7 @@ const App = () => {
     JSON.parse(localStorage.getItem("tableData")) || defaultDataForTable;
 
   const tableHeaders = Object.keys(localTableData[0]);
-  const editRowRef = useRef();
+  const editRowRef = useRef([]);
   const editRef = useRef();
   const saveRef = useRef();
 
@@ -35,12 +35,25 @@ const App = () => {
   let isRowEditable = false;
   let editableRowIndex = 0;
   let editableNameValue = "";
+  let currentRefIndex = -1;
 
   let eidtedRowIndex = [];
 
-  const handleEditRow = (row) => {
+  const addToRefs = (el) => {
+    if (el && !editRowRef.current.includes(el)) {
+      editRowRef.current.push(el);
+    }
+  };
+
+  const handleEditRow = (row, index) => {
+    currentRefIndex = index;
     if (isRowEditable) return;
-    console.log("handleEditRow", row, editableNameValue, editRowRef);
+    console.log(
+      "handleEditRow",
+      row,
+      editableNameValue,
+      editRowRef.current[index]
+    );
     console.log("isRowEditable", isRowEditable);
     editableRowIndex = row.id;
     editRef.current.disabled = true;
@@ -54,7 +67,8 @@ const App = () => {
     // inputElement.addEventListener("keydown", handleKeyDown);
     // editRowRef.current.innerHTML = "";
     // editRowRef.current.removeChild(editRowRef.current.children[0]);
-    editRowRef.current.appendChild(inputElement);
+    console.log("openinputbox", editRowRef.current[currentRefIndex]);
+    editRowRef.current[index].appendChild(inputElement);
     inputElement.focus;
     // editRef.current.innerHTML = "Save";
     console.log("Row Details", row.id, editableRowIndex);
@@ -85,12 +99,17 @@ const App = () => {
     }
   };
   const handleOnChange = (event) => {
+    console.log(currentRefIndex, "currentRefIndex");
     const elementInput = document.getElementById("editablTextField");
     console.log("elementInput", elementInput);
     console.log("handleOnChange", event.target.value);
     editableNameValue = event.target.value;
-    editRowRef.current;
-    console.log("Save", editRowRef.current.children[0].value, editableRowIndex);
+    editRowRef.current[currentRefIndex];
+    console.log(
+      "Save",
+      editRowRef.current[currentRefIndex].children[0].value,
+      editableRowIndex
+    );
     if (!event.target.value.trim()) return;
     updatedLocalTableData = localTableData.map((data) =>
       data.id === editableRowIndex
@@ -124,14 +143,18 @@ const App = () => {
             </tr>
           </thead>
           <tbody>
-            {localTableData.map((row) => (
+            {localTableData.map((row, index) => (
               <tr key={row.id}>
                 <td>{row.id}</td>
-                <td ref={editRowRef}>{row.first_name}</td>
+                {/*                <td ref={(el) => (editRowRef.current[index] = el || null)}> */}
+                <td ref={addToRefs}>{row.first_name}</td>
                 <td>{row.last_name}</td>
                 <td>
                   <div style={{ gap: "2px" }}>
-                    <button onClick={() => handleEditRow(row)} ref={editRef}>
+                    <button
+                      onClick={() => handleEditRow(row, index)}
+                      ref={editRef}
+                    >
                       Edit
                     </button>
                     {/* 
