@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import CommonTabs from "../shared/CommonTabs";
 import { tabsContainer } from "../container/tabs.container";
 import { useSearchParams } from "react-router-dom";
+import CommonDropDown from "../shared/CommonDropDown";
 
 const Tabs = ({ tabParams }) => {
   const { tabsData, onChangeTab, lastVisitedTab, setLastVisitedTab } =
@@ -13,7 +14,7 @@ const Tabs = ({ tabParams }) => {
 
   return (
     <div className="mt-5">
-      {tabsData.length ? (
+      {/*tabsData.length ? (
         <CommonTabs
           {...{
             data: tabsData,
@@ -21,6 +22,19 @@ const Tabs = ({ tabParams }) => {
             tabParams,
             lastVisitedTab,
             setLastVisitedTab,
+          }}
+        />
+      ) : (
+        <h1>No Data</h1>
+      )*/}
+      {tabsData.length ? (
+        <CommonDropDown
+          {...{
+            data: tabsData,
+            onChange: onChangeTab,
+            lastVisitedTab,
+            setLastVisitedTab,
+            tabParams,
           }}
         />
       ) : (

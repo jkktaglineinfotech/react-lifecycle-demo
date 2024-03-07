@@ -10,6 +10,8 @@ import { useSearchParams } from "react-router-dom";
 
 export const tabsContainer = (props) => {
   const dispatch = useDispatch();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [lastVisitedTab, setLastVisitedTab] = useState(
     localStorage.getItem("lastVisitedTab") || "Tab 1"
   );
@@ -50,13 +52,28 @@ export const tabsContainer = (props) => {
   // console.log(tabParams, "tabParams");
 
   const onChangeTab = async (item, tabEvent) => {
+    //if api is called already once
+    // if (isAPICalled) return;
+
     dispatch(startLoading());
     localStorage.setItem("lastVisitedTab", tabEvent);
+
+    console.log("tabEvent", tabEvent);
+    if (tabEvent) {
+      searchParams.set("tab", tabEvent.replace(/ +/g, ""));
+      setSearchParams(searchParams);
+    }
+
     setLastVisitedTab(tabEvent);
     const currentAPIEndPoint = apiEndPoints.filter(
       ({ api }) => api === item.api
     );
+
     const data = await getDataFromAPI(currentAPIEndPoint[0].endPoint);
+
+    // if (data) {
+    //   setIsAPICalled(true);
+    // }
     console.log("API Data", data);
     dispatch(stopLoadingSuccess());
   };

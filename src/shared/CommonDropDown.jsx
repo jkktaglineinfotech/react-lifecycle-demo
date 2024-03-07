@@ -1,33 +1,24 @@
 import React, { useEffect } from "react";
-import { Tab, Tabs } from "react-bootstrap";
+import { Dropdown, DropdownButton } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
 
-const CommonTabs = ({
+const CommonDropDown = ({
   data,
   onChange,
   tabParams,
   lastVisitedTab,
   setLastVisitedTab,
 }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const handleOnTabSelect = (tabEvent) => {
-    //clear params on change of tab
-    if (tabParams) {
-      searchParams.delete("tab");
-      setSearchParams(searchParams);
-    }
-    console.log("tabEvent", tabEvent);
-    const currentEvent = data.filter((tabElem) => tabElem.name === tabEvent);
-    console.log("currentEvent", currentEvent[0]);
-
-    onChange(currentEvent[0], tabEvent);
+  const selectItem = (eventKey) => {
+    console.log("eventKey", eventKey);
+    const currentSelect = data.filter((tabElem) => tabElem.name === eventKey);
+    onChange(currentSelect[0], eventKey);
+    setLastVisitedTab(eventKey);
   };
-
-  // console.log(tabParams, "tabParamss");
 
   useEffect(() => {
     const lastSavedData = data.filter(({ name }) => name === lastVisitedTab);
+    console.log("data", lastSavedData, lastVisitedTab);
     const getDataFromParams = data.filter(
       ({ name }) => name === tabParams?.replace(/%20/g, "")
     );
@@ -53,33 +44,34 @@ const CommonTabs = ({
       return;
     }
   }, [tabParams]);
-  // }, [lastVisitedTab]);
-
-  if (!data.length) return null;
-
+  console.log("tabParamsInDropDown", tabParams);
   return (
-    <>
-      <Tabs
-        id="justify-tab-example"
-        className="mb-3"
-        justify
-        onSelect={handleOnTabSelect}
-        defaultActiveKey={lastVisitedTab}
-        activeKey={lastVisitedTab}
+    <div
+      style={{
+        display: "flex",
+        position: "relative",
+      }}
+    >
+      <DropdownButton
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+        }}
+        id="dropdown-basic-button"
+        title={lastVisitedTab}
+        onSelect={selectItem}
       >
-        {data?.map((el) => (
-          <Tab
-            key={el.id}
-            eventKey={el.name}
-            title={el.name}
-            mountOnEnter={true}
-          >
-            {el.name}
-          </Tab>
-        ))}
-      </Tabs>
-    </>
+        {data?.map((elem) => {
+          return (
+            <Dropdown.Item eventKey={elem.name} key={elem.id}>
+              {elem.name}
+            </Dropdown.Item>
+          );
+        })}
+      </DropdownButton>
+    </div>
   );
 };
 
-export default CommonTabs;
+export default CommonDropDown;
