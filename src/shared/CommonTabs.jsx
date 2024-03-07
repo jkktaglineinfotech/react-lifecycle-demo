@@ -1,17 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Tab, Tabs } from "react-bootstrap";
 
 const CommonTabs = ({ data, onChange }) => {
   const handleOnTabSelect = (tabEvent) => {
-    // console.log("tabEvent", tabEvent);
+    console.log("tabEvent", tabEvent);
     const currentEvent = data.filter((tabElem) => tabElem.name === tabEvent);
-    // console.log("currentEvent", currentEvent[0]);
+    console.log("currentEvent", currentEvent[0]);
     onChange(currentEvent[0]);
   };
 
-  const checkTabData = () => {
-    console.log("Tab is initizlied");
-  };
+  useEffect(() => {
+    onChange(data[0]);
+  }, []);
+
+  if (!data.length) return null;
+
   return (
     <Tabs
       id="justify-tab-example"
