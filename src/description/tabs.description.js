@@ -11,3 +11,10 @@ export const apiEndPoints = [
   { api: "Jokes", endPoint: process.env.REACT_APP_API_URL_3 },
   { api: "Random User", endPoint: process.env.REACT_APP_API_URL_4 },
 ];
+
+export const tabsFilter = [
+  { urlEndPoint: "tab1", name: "Tab 1" },
+  { urlEndPoint: "tab2", name: "Tab 2" },
+  { urlEndPoint: "tab3", name: "Tab 3" },
+  { urlEndPoint: "tab4", name: "Tab 4" },
+];

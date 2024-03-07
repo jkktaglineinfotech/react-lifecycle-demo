@@ -1,0 +1,3 @@
+export const SAVE_TAB_INDEX = "SAVE_TAB_INDEX";
+export const UPDATE_TAB_INDEX = "UPDATE_TAB_INDEX";
+export const REMOVE_TAB_INDEX = "REMOVE_TAB_INDEX";
