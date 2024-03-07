@@ -8,11 +8,10 @@ import {
 } from "../redux/actions/loadingAction";
 
 export const tabsContainer = () => {
-  // const [selectedTabData, setSelectedTabData] = useState({});
-  // const [currentTab, setCurrentTab] = useState(null);
   const dispatch = useDispatch();
   const onChangeTab = async (item) => {
     dispatch(startLoading());
+
     const currentAPIEndPoint = apiEndPoints.filter(
       ({ api }) => api === item.api
     );
