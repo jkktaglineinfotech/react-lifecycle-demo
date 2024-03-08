@@ -25,7 +25,9 @@ const CommonDataTable = ({
             <tr key={rowIndex}>
               {tableHeaders?.map(
                 (header, colIndex) =>
-                  header !== "Actions" && <td key={colIndex}>{row[header]}</td>
+                  header !== "Actions" && (
+                    <td key={colIndex}>{row[header]?.toString()}</td>
+                  )
               )}
               {hasActions && (
                 <td>
