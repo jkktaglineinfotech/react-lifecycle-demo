@@ -5,14 +5,20 @@ import CommonDataFilter from "../../shared/CommonDataFilter";
 import CommonSearchBox from "../../shared/CommonSearchBox";
 
 const MainTable = () => {
-  const { mainUsersData, handleOnChange } = mainTableContainer();
+  const { mainUsersData, handleOnChange, handleOnSearch, handleOnClear } =
+    mainTableContainer();
   return (
     <div className="container">
-      <div style={{ display: "flex", flexDirection: "row" }}>
+      <div style={{ display: "flex" }}>
         {mainUsersData.length > 1 && (
-          <CommonDataFilter data={mainUsersData} onChange={handleOnChange} />
+          <>
+            <CommonDataFilter data={mainUsersData} onChange={handleOnChange} />
+            <CommonSearchBox
+              onSearch={handleOnSearch}
+              onClear={handleOnClear}
+            />
+          </>
         )}
-        {/* <CommonSearchBox /> */}
       </div>
       {mainUsersData.length > 1 && <CommonDataTable data={mainUsersData} />}
     </div>

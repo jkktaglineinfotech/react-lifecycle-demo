@@ -9,7 +9,8 @@ const CommonSearchBox = ({ onSearch, onClear }) => {
   };
 
   const handleClear = () => {
-    onClear();
+    setSearchTerm("");
+    // onClear();
   };
   return (
     <div className="container mt-4">
